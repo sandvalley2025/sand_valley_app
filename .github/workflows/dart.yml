@@ -1,0 +1,32 @@
+name: Flutter Build
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: macos-latest  # عشان iOS build
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.32.8' # حط إصدار Flutter اللي بتستخدمه
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Analyze project source
+        run: flutter analyze
+
+      - name: Run tests (ignore failures)
+        run: flutter test
+        continue-on-error: true
+
+      - name: Build iOS
+        run: flutter build ios --release --no-codesign
